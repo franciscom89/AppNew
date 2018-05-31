@@ -1,0 +1,120 @@
+  <!doctype html>
+  <html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/animate.css">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <div class="jumbotron">
+  <h1 class="display-5">Registro de asignaturas</h1>
+</div>
+    
+    <form>
+  <div class="form-group">
+    
+    <input type="text" class="form-control animated fadeIn" id="nombreAsignatura"placeholder="Ingrese asignatura">
+  </div>
+  <div class="text-center">
+  <button type="button" class="btn btn-primary" id="bt_guardar_asignatura">Agregar</button>
+  </div>
+  </form>
+  <br>
+
+ 
+  <div class="text-center">
+  <table class="table table-striped" id="tabla_asignaturas">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Asignatura</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+
+  </tbody>
+  </table>
+  </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="../js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+
+
+    <!--Script para guardar asignatura en localStorage-->
+   <script>
+  var listaAsignaturas = localStorage.getItem('nombreAsignatura');
+   var lista_array = [];
+  console.log("lista original1111: "+listaAsignaturas);
+  $('#bt_guardar_asignatura').on('click', function(){
+    
+  $('#nombreAsignatura[type="text"]').each(function(){
+      if($(this).val()==""){
+        alert("Debe ingresar nombre de la asignatura!");
+      }else{
+        if(listaAsignaturas != null){
+       
+        lista_array = listaAsignaturas.split(",");
+        lista_array.push($(this).val());
+      //var value = listaAsignaturas+","+$(this).val();
+        guardar_datos(lista_array);
+      }else{
+        localStorage.setItem("nombreAsignatura", $(this).val());
+      }
+      
+      }
+      
+  });
+  location.reload();
+  });
+
+  cargarTabla(listaAsignaturas);
+    
+  function SomeDeleteRowFunction(btndel) {
+    if (typeof(btndel) == "object") {
+      var asignatura = $(btndel).closest('tr').find('.asignatura').text();
+      var lista_array_actualizada = [];
+      lista_array_actualizada = listaAsignaturas.split(",");
+      var index= lista_array_actualizada.indexOf(asignatura);
+      lista_array_actualizada.splice(index,1);
+      
+      if(lista_array_actualizada.length==0){
+        localStorage.removeItem("nombreAsignatura");
+      }else{
+        guardar_datos(lista_array_actualizada);
+      }
+      
+      (btndel).closest("tr").remove();
+      location.reload();
+      
+    }
+}
+  function cargarTabla(lista){
+  
+    if(lista != null){
+    var asignaturas = lista.split(',');
+    numero = 1;
+    $.each(asignaturas,function(index,value){
+      
+      $('#tabla_asignaturas').append('<tr><td scope="col">'+(numero)+'</td><td class ="asignatura">'+value+'</td> <td><input type="button" class="btn-danger" value="Eliminar" id="bt_eliminar" onClick="SomeDeleteRowFunction(this)" /></td></tr>');
+      numero++;
+    });
+}
+  }
+
+  function guardar_datos(lista){
+    var datos = lista.join(",");
+    localStorage.setItem("nombreAsignatura", datos);
+  }
+  </script>
+
+  </body>
+  </html>

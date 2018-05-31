@@ -1,0 +1,190 @@
+  <!doctype html>
+  <html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/animate.css">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+<div class="jumbotron">
+  <h1 class="display-5">Registro de notas</h1>
+</div>
+    <!--Formulario para registrar notas-->
+    <form>
+  <div class="form-group">
+  <div class="input-group mb-3">
+ 
+  <select class="custom-select" id="selectLista">
+  </select>
+  </div>
+  <br>
+    <label for="input_nota" class="animated fadeIn">Nota</label>
+    <input type="number" class="form-control animated fadeIn" id="input_nota"placeholder="Ingrese nota"></input>
+  </div>
+  
+  <div class="text-center">
+  <button type="button" class="btn btn-primary animated fadeIn" id="bt_guardar_nota">Registrar</button>
+  </div>
+  </form>
+  <br>
+
+  <!--Tabla de asignaturas registradas-->
+  <div class="text-center">
+  <table class="table table-striped animated fadeIn" id="tabla_notas">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Asignatura</th>
+      <th scope="col">Nota</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+
+  </tbody>
+  </table>
+  </div>
+<h2>Promedio: <span class="badge badge-secondary"id="badge_promedio">New</span></h2>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="../js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script>
+    
+
+
+
+      var lista_notas = [];
+      var dropbox = document.getElementById("selectLista");
+      cargar_lista();
+      cargar_tabla(lista_notas);
+
+      function agregar_nota(asignatura,nota){
+        var newNota = {
+          asignatura : asignatura ,
+          nota : nota
+        };
+        console.log(newNota);
+        lista_notas.push(newNota);
+      }
+
+      document.getElementById("bt_guardar_nota").addEventListener("click",registrar_nota);
+
+      function registrar_nota(){
+        var nota = $("#input_nota").val();
+        var nota_maxima = localStorage.getItem("notamax");
+        if(nota==""){
+          alert("Debe ingresar nota");
+        }else{
+          if(nota>nota_maxima){
+            alert("La nota debe ser igual o menor a: "+nota_maxima);
+          }else{
+            var asignatura = dropbox.options[dropbox.selectedIndex].value;
+        agregar_nota(asignatura,nota);
+        guardar_local(lista_notas);
+        cargar_tabla();
+          }
+        }
+        
+        
+      }
+
+      function cargar_tabla(){
+        var lista = getListaNotas();
+        tbody = document.querySelector('#tabla_notas tbody');
+        tbody.innerHTML='';
+        for(var i=0; i<lista.length;i++){
+          var row = tbody.insertRow(i);
+          var numero = row.insertCell(0);
+          numero.innerHTML = ""+(i+1);
+          var celda_asignatura = row.insertCell(1);
+          celda_asignatura.innerHTML = lista[i].asignatura;
+          var celda_nota = row.insertCell(2);
+          celda_nota.innerHTML = lista[i].nota;
+          var celda_eliminar = row.insertCell(3);
+          var bt_eliminar = document.createElement('input');
+          bt_eliminar.type="button";
+          bt_eliminar.value="Eliminar";
+          bt_eliminar.id=i;
+          bt_eliminar.className ="btn-danger";
+          bt_eliminar.addEventListener('click',function(){
+            eliminar(this);
+            this.closest("tr").remove();
+          });
+          
+          celda_eliminar.appendChild(bt_eliminar);
+          //bt_eliminar.class="btn-danger"
+          tbody.appendChild(row);
+          calcular_promedio();
+        }
+      }
+
+      function getListaNotas(){
+        var lista_almacenada = localStorage.getItem("notas");
+        if(lista_almacenada==null){
+          lista_notas = [];
+        }else{
+          lista_notas = JSON.parse(lista_almacenada);
+        }
+        return lista_notas;
+      }
+
+      function guardar_local(lista){
+        localStorage.setItem("notas", JSON.stringify(lista));
+      }
+
+
+
+      function cargar_lista(){
+
+    var array_opciones = localStorage.getItem("nombreAsignatura");
+    if(array_opciones == null){
+     // alert("Debe registrar asignaturas primero");
+    }else{
+      lista = array_opciones.split(",");
+
+  for(var i=0; i<lista.length;i++){
+   // alert(lista[i]);
+    dropbox.options.add(new Option(lista[i]));
+    }
+  
+  }
+
+  }
+
+function eliminar(btndel) {
+
+  var lista = getListaNotas();
+  //alert(btndel.id);
+  lista.splice(btndel.id,1);
+  guardar_local(lista);
+      (btndel).closest("tr").remove();
+      location.reload();
+}
+
+function calcular_promedio(){
+  var lista = getListaNotas();
+  var promedio = 0;
+  var cantidad = lista.length;
+  for (var i = 0; i<cantidad;i++){
+    promedio = promedio + parseInt(lista[i].nota);
+  }
+  promedio = promedio / cantidad;
+  //alert(promedio);
+
+  document.getElementById('badge_promedio').innerText = promedio;
+
+}
+
+
+    </script>
+  </body>
+  </html>

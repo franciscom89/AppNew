@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/animate.css">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+  <div class="jumbotron">
+  <h1 class="display-5">Configuraciones</h1>
+</div>
+   <form>
+  <div class="form-group">
+    <label for="input_nota">Nota maxima</label>
+    <input type="number" class="form-control" id="input_nota" aria-describedby="emailHelp" placeholder="Ingrese nota">
+  </div>
+  
+  <br>
+  <button type="submit" class="btn btn-primary" id="btn_definir_nota">Definir</button>
+</form>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="../js/jquery-3.3.1.slim.min.js"></script>
+    <script src="../js/popper.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+
+    <script>
+     
+
+        $("#btn_definir_nota").click(
+  
+  
+          function(){
+  
+            
+            var notamax=document.getElementById("input_nota").value;
+            localStorage.setItem("notamax",notamax);
+            
+
+          }
+        )
+
+        
+          
+          
+        
+
+    </script>
+
+
+  </body>
+</html>
